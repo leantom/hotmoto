@@ -5,11 +5,14 @@ import (
 	"github.com/gorilla/mux"
 
 	"encoding/json"
+	_"hotmoto/Control"
 
-
+	"hotmoto/Control"
 )
 
-var locationParkingDAO = LocationParkingDAO{}
+
+
+var locationParkingDAO = Control.LocationParkingDAO{}
 
 
 // Fetch Example
@@ -38,7 +41,7 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 
 
 func init() {
-	Connect()
+
 }
 
 func main() {

@@ -1,4 +1,4 @@
-package main
+package Control
 
 import (
 	"gopkg.in/mgo.v2/bson"
