@@ -1,4 +1,4 @@
-package hotmoto
+package main
 
 import (
 	"log"
