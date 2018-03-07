@@ -39,8 +39,7 @@ var db *mgo.Database
 
 const (
 	COLLECTION = "LocationParking"
-	DB = "location_db"
-	MongoDBHosts = "ds251598.mlab.com"
+	DB = "hotmoto_db"
 )
 
 // Establish a connection to database
@@ -102,8 +101,6 @@ func (m *LocationParkingDAO) FindNearLocationParking() ([]LocationParkingDAO, er
 }
 
 
-
-
 var locationParkingDAO = LocationParkingDAO{}
 
 
@@ -113,6 +110,7 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 	res, err := locationParkingDAO.FindAll()
 	if err != nil {
+		fmt.Print(res)
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -138,6 +136,7 @@ func init() {
 
 func main() {
 	fmt.Println("hello worlds")
+	locationParkingDAO.FindAll()
 	r := mux.NewRouter()
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
