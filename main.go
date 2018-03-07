@@ -137,9 +137,8 @@ func init() {
 }
 
 func main() {
-	fmt.Print("Hello world")
+	fmt.Println("hello worlds")
 	r := mux.NewRouter()
-
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 }
