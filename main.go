@@ -148,8 +148,8 @@ func init() {
 
 func main() {
 	fmt.Print("Hello world")
-	r := mux.NewRouter()
+//	r := mux.NewRouter()
 	//LocationFisrtParking
-	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
+//	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 }
