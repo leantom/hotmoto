@@ -143,7 +143,7 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 
 
 func init() {
-	Control.Connect()
+	Connect()
 }
 
 func main() {
