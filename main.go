@@ -48,7 +48,7 @@ const (
 func Connect() {
 
 	// We need this object to establish a session to our MongoDB.
-	session, err := mgo.Dial("ec2-52-55-50-216.compute-1.amazonaws.com")
+	session, err := mgo.Dial("localhost")
 	if err != nil {
 		fmt.Println("Failed to establish connection to Mongo server:", err)
 	}
