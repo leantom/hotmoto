@@ -11,6 +11,7 @@ import (
 	"gopkg.in/mgo.v2"
 
 	"fmt"
+	"log"
 )
 
 
@@ -53,13 +54,13 @@ func Connect() {
 	}
 	fmt.Println("Mongo server connected")
 	db = session.DB(DB)
+
 }
 
 // Find list of movies
 func (m *LocationParkingDAO) FindAll() ([]LocationParkingDAO, error) {
 	var movies []LocationParkingDAO
 	err := db.C(COLLECTION).Find(bson.M{}).All(&movies)
-	fmt.Println("Error: ",movies)
 	return movies, err
 }
 
@@ -136,7 +137,15 @@ func init() {
 }
 
 func main() {
-	fmt.Println("hello worlds")
+
+	names, err := db.CollectionNames()
+	if err != nil {
+		// Handle error
+		log.Printf("Failed to get coll names: %v", err)
+		return
+	}
+	log.Println(" get coll names:", names)
+
 	locationParkingDAO.FindAll()
 	r := mux.NewRouter()
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
