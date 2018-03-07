@@ -38,7 +38,7 @@ var db *mgo.Database
 
 
 const (
-	COLLECTION = "LocationParking"
+	COLLECTION = "motopark"
 	DB = "hotmoto_db"
 )
 
@@ -52,7 +52,7 @@ func Connect() {
 		fmt.Println("Failed to establish connection to Mongo server:", err)
 	}
 	fmt.Println("Mongo server connected")
-	db = session.DB("test")
+	db = session.DB(DB)
 }
 
 // Find list of movies
