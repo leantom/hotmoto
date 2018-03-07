@@ -59,7 +59,7 @@ func Connect() {
 func (m *LocationParkingDAO) FindAll() ([]LocationParkingDAO, error) {
 	var movies []LocationParkingDAO
 	err := db.C(COLLECTION).Find(bson.M{}).All(&movies)
-	fmt.Println("Error: ",err)
+	fmt.Println("Error: ",movies)
 	return movies, err
 }
 
