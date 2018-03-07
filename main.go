@@ -48,22 +48,12 @@ const (
 func Connect() {
 
 	// We need this object to establish a session to our MongoDB.
-	mongoDBDialInfo := &mgo.DialInfo{
-		Addrs:    []string{MongoDBHosts},
-		Timeout:  60 * time.Second,
-		Database: DB,
-		Username: "admin",
-		Password: "Quang12345@",
-	}
-
-	// Create a session which maintains a pool of socket connections
-	// to our MongoDB.
-	mongoSession, err := mgo.DialWithInfo(mongoDBDialInfo)
+	session, err := mgo.Dial("ec2-52-55-50-216.compute-1.amazonaws.com")
 	if err != nil {
-		log.Fatalf("CreateSession: %s\n", err)
+		fmt.Println("Failed to establish connection to Mongo server:", err)
 	}
-	log.Print("connect database")
-	db = mongoSession.DB(mongoDBDialInfo.Database)
+	fmt.Println("Mongo server connected")
+	db = session.DB("test")
 }
 
 // Find list of movies
