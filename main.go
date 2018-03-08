@@ -157,6 +157,7 @@ func findALL() {
 	err := db.C("client").Find(nil).All(&results)
 	if err != nil {
 		// TODO: Do something about the error
+		fmt.Println("Error:", err)
 	} else {
 		fmt.Println("Results All: ", results)
 	}
