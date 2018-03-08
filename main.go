@@ -19,14 +19,22 @@ import (
 // the properties in mongodb document
 
 type location struct {
-	Coordinates []int `bson:"coordinates" json:"coordinates"`
+
+	Position  []int `bson:"position" json:"position"`
+	Name string `bson:"name" json:"name"`
 	Type_Location	string `bson:"type" json:"type"`
+
 }
 
 type LocationParking struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
-	Location     location  `bson:"location" json:"location"`
+	Position  []int `bson:"position" json:"position"`
 	Name  		string        `bson:"name" json:"name"`
+	Address string `bson:"address" json:"address"`
+	Phone string `bson:"phone" json:"phone"`
+	Cost string `bson:"cost" json:"cost"`
+	Total int `bson:"total" json:"total"`
+
 }
 
 
@@ -119,6 +127,13 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, res)
 }
 
+func home(w http.ResponseWriter, r *http.Request) {
+
+
+	respondWithJson(w, http.StatusOK, res)
+}
+
+
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJson(w, code, map[string]string{"error": msg})
@@ -136,6 +151,17 @@ func init() {
 	Connect()
 }
 
+func findALL() {
+	var results []LocationParking
+
+	err := db.C("client").Find(nil).All(&results)
+	if err != nil {
+		// TODO: Do something about the error
+	} else {
+		fmt.Println("Results All: ", results)
+	}
+}
+
 func main() {
 
 	names, err := db.CollectionNames()
@@ -145,9 +171,9 @@ func main() {
 		return
 	}
 	log.Println(" get coll names:", names)
-
-	locationParkingDAO.FindAll()
+	findALL()
 	r := mux.NewRouter()
+	r.HandleFunc("/home",home).Methods("GET")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 }
