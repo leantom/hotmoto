@@ -160,6 +160,7 @@ func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
 	err := db.C(DB).Find(nil).All(&results)
+	fmt.Println("Results One : ", results)
 	if err != nil {
 		// TODO: Do something about the error
 		fmt.Println("Error:", err)
@@ -180,6 +181,7 @@ func main() {
 	log.Println(" get coll names:", names)
 	findALL()
 	r := mux.NewRouter()
+
 	r.HandleFunc("/home",home).Methods("GET")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
