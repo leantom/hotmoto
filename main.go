@@ -130,6 +130,7 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 func home(w http.ResponseWriter, r *http.Request) {
 
 	res, err := findALL()
+
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
@@ -158,7 +159,7 @@ func init() {
 func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
-	err := db.C("client").Find(nil).All(&results)
+	err := db.C(DB).Find(nil).All(&results)
 	if err != nil {
 		// TODO: Do something about the error
 		fmt.Println("Error:", err)
@@ -177,7 +178,7 @@ func main() {
 		return
 	}
 	log.Println(" get coll names:", names)
-	findALL()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/home",home).Methods("GET")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
