@@ -66,8 +66,8 @@ func Connect() {
 }
 
 // Find list of movies
-func (m *LocationParkingDAO) FindAll() ([]LocationParkingDAO, error) {
-	var movies []LocationParkingDAO
+func (m *LocationParkingDAO) FindAll() ([]LocationParking, error) {
+	var movies []LocationParking
 	err := db.C(COLLECTION).Find(bson.M{}).All(&movies)
 	return movies, err
 }
@@ -129,7 +129,11 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 func home(w http.ResponseWriter, r *http.Request) {
 
-
+	res, err := findALL()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	respondWithJson(w, http.StatusOK, res)
 }
 
@@ -151,7 +155,7 @@ func init() {
 	Connect()
 }
 
-func findALL() {
+func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
 	err := db.C("client").Find(nil).All(&results)
@@ -161,6 +165,7 @@ func findALL() {
 	} else {
 		fmt.Println("Results All: ", results)
 	}
+	return results, err
 }
 
 func main() {
