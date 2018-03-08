@@ -186,6 +186,8 @@ func main() {
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
+	} else {
+		fmt.Print("Hello worlds")
 	}
 
 }
