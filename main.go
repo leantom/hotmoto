@@ -160,7 +160,7 @@ func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
 	err := db.C(DB).Find(bson.M{}).All(&results)
-	fmt.Println("Results One : ", results)
+	fmt.Println("Results One : ", DB)
 	if err != nil {
 		// TODO: Do something about the error
 		fmt.Println("Error:", err)
