@@ -133,13 +133,13 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 func home(w http.ResponseWriter, r *http.Request) {
 
-	_, err := findALL()
+	res, err := findALL()
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, "Hello world")
+	respondWithJson(w, http.StatusOK, res)
 }
 
 
@@ -163,8 +163,9 @@ func init() {
 func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
-	err := db.C(DB).Find(bson.M{}).All(&results)
+	err := db.C(COLLECTION).Find(bson.M{}).All(&results)
 	fmt.Println("Results One : ", DB)
+
 	if err != nil {
 		// TODO: Do something about the error
 		fmt.Println("Error:", err)
@@ -186,9 +187,9 @@ func main() {
 
 	overseer.Run(overseer.Config{
 		Program: prog,
-		Address: ":3000",
+		Address: ":8080",
 		Fetcher: &fetcher.HTTP{
-			URL:      "http://localhost:4000/binaries/myapp",
+			URL:      "http://localhost/",
 			Interval: 1 * time.Second,
 		},
 	})
@@ -204,6 +205,7 @@ func main() {
 	findALL()
 	r := mux.NewRouter()
 
+	r.HandleFunc("/home",home).Methods("GET")
 	r.HandleFunc("/home",home).Methods("GET")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
