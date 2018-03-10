@@ -202,7 +202,7 @@ func main() {
 		return
 	}
 	log.Println(" get coll names:", names)
-	findALL()
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/home",home).Methods("GET")
