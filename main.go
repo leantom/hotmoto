@@ -206,7 +206,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/home",home).Methods("GET")
-	r.HandleFunc("/home",home).Methods("GET")
+
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
