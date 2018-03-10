@@ -164,7 +164,6 @@ func findALL() ([]LocationParking, error) {
 	var results []LocationParking
 
 	err := db.C(COLLECTION).Find(bson.M{}).All(&results)
-	fmt.Println("Results One : ", DB)
 
 	if err != nil {
 		// TODO: Do something about the error
@@ -210,9 +209,6 @@ func main() {
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
-	} else {
-		fmt.Print("Hello worlds")
 	}
 
-	fmt.Print("Hello worlds")
 }
