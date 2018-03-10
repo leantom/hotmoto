@@ -10,8 +10,12 @@ import (
 
 	"gopkg.in/mgo.v2"
 
+	"github.com/jpillora/overseer"
+	"github.com/jpillora/overseer/fetcher"
+
 	"fmt"
 	"log"
+	"time"
 )
 
 
@@ -129,13 +133,13 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 func home(w http.ResponseWriter, r *http.Request) {
 
-	res, err := findALL()
+	_, err := findALL()
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, res)
+	respondWithJson(w, http.StatusOK, "Hello world")
 }
 
 
@@ -170,7 +174,25 @@ func findALL() ([]LocationParking, error) {
 	return results, err
 }
 
+func prog(state overseer.State) {
+	log.Printf("app (%s) listening...", state.ID)
+	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app (%s) says hello\n", state.ID)
+	}))
+	http.Serve(state.Listener, nil)
+}
+
 func main() {
+
+	overseer.Run(overseer.Config{
+		Program: prog,
+		Address: ":3000",
+		Fetcher: &fetcher.HTTP{
+			URL:      "http://localhost:4000/binaries/myapp",
+			Interval: 1 * time.Second,
+		},
+	})
+
 
 	names, err := db.CollectionNames()
 	if err != nil {
