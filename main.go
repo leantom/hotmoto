@@ -136,7 +136,7 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 	defer  r.Body.Close()
 
 	var parking LocationParking
-	err := 	json.NewDecoder(r.Body).Decode(parking);
+	err := 	json.NewDecoder(r.Body).Decode(&parking);
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
