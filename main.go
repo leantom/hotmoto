@@ -185,14 +185,14 @@ func prog(state overseer.State) {
 
 func main() {
 
-	overseer.Run(overseer.Config{
-		Program: prog,
-		Address: ":8080",
-		Fetcher: &fetcher.HTTP{
-			URL:      "http://localhost/",
-			Interval: 1 * time.Second,
-		},
-	})
+	//overseer.Run(overseer.Config{
+	//	Program: prog,
+	//	Address: ":8080",
+	//	Fetcher: &fetcher.HTTP{
+	//		URL:      "http://localhost/",
+	//		Interval: 1 * time.Second,
+	//	},
+	//})
 
 
 	names, err := db.CollectionNames()
