@@ -131,15 +131,24 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, res)
 }
 
-func home(w http.ResponseWriter, r *http.Request) {
 
-	res, err := findALL()
+func UpdateParking(w http.ResponseWriter, r *http.Request) {
+	defer  r.Body.Close()
 
+	var parking LocationParking
+	err := 	json.NewDecoder(r.Body).Decode(parking);
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, err.Error())
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	respondWithJson(w, http.StatusOK, res)
+	parking.ID = bson.NewObjectId()
+
+	if err := locationParkingDAO.Insert(&parking); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, parking)
+
 }
 
 
@@ -204,8 +213,9 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/home",home).Methods("GET")
-
+	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
+	//UpdateParking
+	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
