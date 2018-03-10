@@ -215,7 +215,7 @@ func main() {
 
 	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
 	//UpdateParking
-	//r.HandleFunc("/parkings",UpdateParking).Methods("POST")
+	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
