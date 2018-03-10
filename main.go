@@ -138,7 +138,8 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 	var parking LocationParking
 	err := 	json.NewDecoder(r.Body).Decode(&parking);
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		log.Print(&parking)
+		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	parking.ID = bson.NewObjectId()
