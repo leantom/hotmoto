@@ -10,12 +10,13 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-	//"github.com/jpillora/overseer"
-	//"github.com/jpillora/overseer/fetcher"
+	"github.com/jpillora/overseer"
+	"github.com/jpillora/overseer/fetcher"
 
 	"fmt"
 	"log"
-	//"time"
+	"time"
+
 )
 
 
@@ -32,7 +33,7 @@ type location struct {
 
 type LocationParking struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
-	Position  []int `bson:"position" json:"position"`
+	Position  [2]float64 `bson:"position" json:"position"`
 	Name  		string        `bson:"name" json:"name"`
 	Address string `bson:"address" json:"address"`
 	Phone string `bson:"phone" json:"phone"`
@@ -76,6 +77,12 @@ func (m *LocationParkingDAO) FindAll() ([]LocationParking, error) {
 	return movies, err
 }
 
+func (m *LocationParkingDAO) FindId(id string) (LocationParking, error) {
+	var locationParking LocationParking
+	err := db.C(COLLECTION).Find(bson.M{"_id":bson.ObjectIdHex(id)}).One(&locationParking)
+	return locationParking, err
+}
+
 func (m *LocationParkingDAO) Insert(res *LocationParking)  error {
 	err := db.C(COLLECTION).Insert(res)
 	return err
@@ -86,6 +93,10 @@ func (m *LocationParkingDAO) Update(res *LocationParking) error {
 	return err
 }
 
+func (m *LocationParkingDAO) Delete(res *LocationParking) error {
+	err := db.C(COLLECTION).RemoveId(res.ID)
+	return err
+}
 
 func (m *LocationParkingDAO) FindNearLocationParking() ([]LocationParkingDAO, error) {
 	var restaurants []LocationParkingDAO
@@ -152,6 +163,29 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func deleteParking(w http.ResponseWriter, r *http.Request)  {
+	defer r.Body.Close()
+	var parking LocationParking
+
+	if err := json.NewDecoder(r.Body).Decode(&parking); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	currentParking, err := locationParkingDAO.FindId(parking.ID.Hex())
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Not Found")
+		return
+	}
+
+	if err := locationParkingDAO.Delete(&currentParking); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, currentParking)
+
+}
 
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
@@ -184,24 +218,24 @@ func findALL() ([]LocationParking, error) {
 	return results, err
 }
 
-//func prog(state overseer.State) {
-//	log.Printf("app (%s) listening...", state.ID)
-//	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		fmt.Fprintf(w, "app (%s) says hello\n", state.ID)
-//	}))
-//	http.Serve(state.Listener, nil)
-//}
+func prog(state overseer.State) {
+	log.Printf("app (%s) listening...", state.ID)
+	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app (%s) says hello\n", state.ID)
+	}))
+	http.Serve(state.Listener, nil)
+}
 
 func main() {
 
-	//overseer.Run(overseer.Config{
-	//	Program: prog,
-	//	Address: ":3000",
-	//	Fetcher: &fetcher.HTTP{
-	//		URL:      "http://localhost/",
-	//		Interval: 1 * time.Second,
-	//	},
-	//})
+	overseer.Run(overseer.Config{
+		Program: prog,
+		Address: ":3000",
+		Fetcher: &fetcher.HTTP{
+			URL:      "http://localhost",
+			Interval: 1 * time.Second,
+		},
+	})
 
 
 	names, err := db.CollectionNames()
