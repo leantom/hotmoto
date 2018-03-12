@@ -16,6 +16,7 @@ import (
 	//"github.com/jpillora/overseer"
 
 	"./Module"
+	"./MotoPark"
 )
 
 
@@ -132,7 +133,7 @@ var locationParkingDAO = LocationParkingDAO{}
 
 func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
-	res, err := locationParkingDAO.FindAll()
+	res, err := MotoPark.FindAll()
 	if err != nil {
 		fmt.Print(res)
 		respondWithError(w, http.StatusBadRequest, err.Error())
