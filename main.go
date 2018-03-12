@@ -10,12 +10,11 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-
-
 	"fmt"
 	"log"
 
 	//"github.com/jpillora/overseer"
+	"hotmoto/Module"
 )
 
 
@@ -142,6 +141,38 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func FindAllUser(w http.ResponseWriter, r *http.Request) {
+	defer  r.Body.Close()
+
+	users,err := Module.FindAll()
+	if err != nil {
+		log.Print(&users)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, users)
+}
+
+func InsertUser(w http.ResponseWriter, r *http.Request) {
+	defer  r.Body.Close()
+
+	var users Module.Users
+	err := 	json.NewDecoder(r.Body).Decode(&users);
+	if err != nil {
+		log.Print(&users)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	users.ID = bson.NewObjectId()
+
+	if err := Module.Insert(users); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, users)
+
+}
+
 func UpdateParking(w http.ResponseWriter, r *http.Request) {
 	defer  r.Body.Close()
 
@@ -249,6 +280,10 @@ func main() {
 
 	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
 	// UpdateParking
+	r.HandleFunc("/users",FindAllUser).Methods("GET")
+
+	r.HandleFunc("/users",InsertUser).Methods("POST")
+
 	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
 	// DELETE
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
