@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-type motopark struct {
+type MotoPark struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
 	Position  [2]float64 `bson:"position" json:"position"`
 	Name  		string        `bson:"name" json:"name"`
@@ -35,9 +35,9 @@ func init() {
 }
 
 
-func FindAll() ([]motopark, error)  {
+func FindAll() ([]MotoPark, error)  {
 
-	var users []motopark
+	var users []MotoPark
 	err := db.C(COLLECTION).Find(bson.M{}).All(&users)
 	if err != nil {
 
@@ -47,18 +47,18 @@ func FindAll() ([]motopark, error)  {
 	return users, err
 }
 
-func FindById(userID string) (motopark, error)  {
-	var user motopark
+func FindById(userID string) (MotoPark, error)  {
+	var user MotoPark
 	err := db.C(COLLECTION).Find(bson.M{"_id":bson.ObjectIdHex(userID)}).One(&user)
 	return user, err
 }
-func Insert(user motopark) (error)  {
+func Insert(user MotoPark) (error)  {
 
 	err := db.C(COLLECTION).Insert(user)
 	return  err
 }
 
-func Update(user motopark) (error)  {
+func Update(user MotoPark) (error)  {
 
 	err := db.C(COLLECTION).UpdateId(user.ID, &user)
 	return  err
@@ -67,4 +67,30 @@ func Delete(userID string) ( error)  {
 
 	err := db.C(COLLECTION).RemoveId(userID)
 	return err
+}
+
+func  FindNearLocationParking() ([]MotoPark, error) {
+	var parks []MotoPark
+
+	// search criteria
+	long := -73.8601152
+	lat := 	40.7311739
+
+	scope := 3000 // max distance in metres
+
+	collection := db.C(COLLECTION)
+
+	err := collection.Find(bson.M{
+		"location" : bson.M{
+			"$nearSphere":bson.M{
+				"$geometry": bson.M{
+					"coordinates": []float64{long, lat},
+				},
+				"$maxDistance": scope,
+			},
+		},
+	}).Limit(10).All(&parks)
+
+
+	return parks, err
 }
