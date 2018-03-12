@@ -182,7 +182,7 @@ func deleteParking(w http.ResponseWriter, r *http.Request)  {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusCreated, currentParking)
+	respondWithJson(w, http.StatusCreated, "Sucessfully delete")
 
 }
 
@@ -248,8 +248,11 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
-	//UpdateParking
+	// UpdateParking
 	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
+	// DELETE
+	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
+
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
