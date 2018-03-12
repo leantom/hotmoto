@@ -14,7 +14,8 @@ import (
 	"log"
 
 	//"github.com/jpillora/overseer"
-	"hotmoto/Module"
+
+	"./Module"
 )
 
 
@@ -145,8 +146,9 @@ func FindAllUser(w http.ResponseWriter, r *http.Request) {
 	defer  r.Body.Close()
 
 	users,err := Module.FindAll()
+
 	if err != nil {
-		log.Print(&users)
+
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}

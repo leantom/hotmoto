@@ -3,6 +3,10 @@ package Module
 import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
+
+	"log"
+	//"fmt"
+
 	"fmt"
 )
 
@@ -21,10 +25,26 @@ const  (
 
 var db *mgo.Database
 
+func init() {
+	session, err := mgo.Dial("localhost")
+	if err != nil {
+		fmt.Println("Failed to establish connection to Mongo server:", err)
+	}
+	fmt.Println("Mongo server connected")
+	db = session.DB(DB)
+
+}
+
+
 func FindAll() ([]Users, error)  {
+
 	var users []Users
 	err := db.C(COLLECTION).Find(bson.M{}).All(&users)
-	fmt.Println(users)
+	if err != nil {
+
+		return nil, err
+	}
+	log.Println(COLLECTION)
 	return users, err
 }
 
