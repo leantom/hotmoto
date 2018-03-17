@@ -32,9 +32,9 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
+
 	respondWithJson(w, http.StatusOK, res)
 }
-
 
 func FindAllUser(w http.ResponseWriter, r *http.Request) {
 	defer  r.Body.Close()
@@ -69,6 +69,7 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
 func UpdateParking(w http.ResponseWriter, r *http.Request) {
 	defer  r.Body.Close()
 
@@ -79,9 +80,8 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	parking.ID = bson.NewObjectId()
 
-	if err := MotoPark.Insert(parking); err != nil {
+	if err := MotoPark.Update(parking); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -112,7 +112,6 @@ func deleteParking(w http.ResponseWriter, r *http.Request)  {
 	respondWithJson(w, http.StatusCreated, "Sucessfully delete")
 
 }
-
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJson(w, code, map[string]string{"error": msg})
@@ -150,18 +149,27 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
-	// UpdateParking
+
 	r.HandleFunc("/users",FindAllUser).Methods("GET")
 
 	r.HandleFunc("/users",InsertUser).Methods("POST")
 
+	r.HandleFunc("/users",InsertUser).Methods("POST")
+
 	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
-	// DELETE
+
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
-	if err := http.ListenAndServe(":8080", r); err != nil {
-		log.Fatal(err)
-	}
+
+	server := &http.Server{Addr: ":8080", Handler: r}
+	server.SetKeepAlivesEnabled(true)
+
+	server.ListenAndServe()
+
+	//
+	//if err := http.ListenAndServe(":8080", r); err != nil {
+	//	log.Fatal(err)
+	//}
 
 }
