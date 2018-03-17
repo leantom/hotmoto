@@ -164,12 +164,10 @@ func main() {
 
 	server := &http.Server{Addr: ":8080", Handler: r}
 	server.SetKeepAlivesEnabled(true)
-
 	server.ListenAndServe()
 
 	//
 	//if err := http.ListenAndServe(":8080", r); err != nil {
 	//	log.Fatal(err)
 	//}
-
 }
