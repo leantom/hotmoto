@@ -163,7 +163,7 @@ func main() {
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 	server := &http.Server{Addr: ":8080", Handler: r}
-	server.SetKeepAlivesEnabled(true)
+	server.SetKeepAlivesEnabled(false)
 	server.ListenAndServe()
 
 	//
