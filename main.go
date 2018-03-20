@@ -12,10 +12,11 @@ import (
 	"fmt"
 	"log"
 
-	//"github.com/jpillora/overseer"
+	"github.com/jpillora/overseer"
 
 	"./Module"
 	"./MotoPark"
+
 )
 
 
@@ -28,11 +29,11 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 	res, err := MotoPark.FindAll()
 	if err != nil {
-		fmt.Print(res)
+
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	fmt.Print(res)
 	respondWithJson(w, http.StatusOK, res)
 }
 
@@ -124,28 +125,9 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
-
-//func prog(state overseer.State) {
-//	log.Printf("app (%s) listening...", state.ID)
-//	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		fmt.Fprintf(w, "app (%s) says hello\n", state.ID)
-//	}))
-//	http.Serve(state.Listener, nil)
-//}
-
-func main() {
-
-	//overseer.Run(overseer.Config{
-	//	Program: prog,
-	//	Address: ":3000",
-	//	Fetcher: &fetcher.HTTP{
-	//		URL:      "http://localhost",
-	//		Interval: 1 * time.Second,
-	//	},
-	//})
-
-
-
+//prog(state) runs in a child process
+func prog(state overseer.State) {
+	log.Printf("app (%s) listening...", state.ID)
 	r := mux.NewRouter()
 
 	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
@@ -154,7 +136,7 @@ func main() {
 
 	r.HandleFunc("/users",InsertUser).Methods("POST")
 
-	r.HandleFunc("/users",InsertUser).Methods("POST")
+	//r.HandleFunc("/users",InsertUser).Methods("POST")
 
 	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
 
@@ -162,12 +144,17 @@ func main() {
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
-	server := &http.Server{Addr: ":8080", Handler: r}
-	server.SetKeepAlivesEnabled(false)
-	server.ListenAndServe()
+	if err := http.ListenAndServe(":3000", r); err != nil {
+		log.Fatal(err)
+	}
+}
 
-	//
-	//if err := http.ListenAndServe(":8080", r); err != nil {
-	//	log.Fatal(err)
-	//}
+func main() {
+
+	overseer.Run(overseer.Config{
+		Program: prog,
+		Address: ":8080",
+	})
+
+
 }
