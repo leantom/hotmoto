@@ -17,6 +17,8 @@ import (
 	"./Module"
 	"./MotoPark"
 
+	"github.com/jpillora/overseer/fetcher"
+	"time"
 )
 
 
@@ -146,6 +148,8 @@ func prog(state overseer.State) {
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 	http.Serve(state.Listener, r)
+
+
 }
 
 func main() {
@@ -153,6 +157,10 @@ func main() {
 	overseer.Run(overseer.Config{
 		Program: prog,
 		Address: ":8080",
+		Fetcher: &fetcher.HTTP{
+			URL:      "http://localhost:4000/binaries/myapp",
+			Interval: 1 * time.Second,
+		},
 	})
 
 
