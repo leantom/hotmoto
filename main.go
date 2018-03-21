@@ -158,7 +158,7 @@ func main() {
 		Program: prog,
 		Address: ":8080",
 		Fetcher: &fetcher.HTTP{
-			URL:      "http://localhost:4000/binaries/myapp",
+			URL:      "http://localhost:4000",
 			Interval: 1 * time.Second,
 		},
 	})
