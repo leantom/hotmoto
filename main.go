@@ -2,12 +2,12 @@ package main
 
 import (
 	"net/http"
+
 	"github.com/gorilla/mux"
 
 	"encoding/json"
 
 	"gopkg.in/mgo.v2/bson"
-
 
 	"fmt"
 	"log"
@@ -17,10 +17,10 @@ import (
 	"./Module"
 	"./MotoPark"
 
-	"github.com/jpillora/overseer/fetcher"
 	"time"
-)
 
+	"github.com/jpillora/overseer/fetcher"
+)
 
 // Represents a movie, we uses bson keyword to tell the mgo driver how to name
 // the properties in mongodb document
@@ -39,10 +39,28 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, res)
 }
 
-func FindAllUser(w http.ResponseWriter, r *http.Request) {
-	defer  r.Body.Close()
+func InsertParking(w http.ResponseWriter, r *http.Request) {
 
-	users,err := Module.FindAll()
+	var parking MotoPark.MotoPark
+	err := json.NewDecoder(r.Body).Decode(&parking)
+	if err != nil {
+		log.Print(&parking)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	parking.ID = bson.NewObjectId()
+	if err := MotoPark.Insert(parking); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, parking)
+}
+
+func FindAllUser(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	users, err := Module.FindAll()
 
 	if err != nil {
 
@@ -53,10 +71,10 @@ func FindAllUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertUser(w http.ResponseWriter, r *http.Request) {
-	defer  r.Body.Close()
+	defer r.Body.Close()
 
 	var users Module.Users
-	err := 	json.NewDecoder(r.Body).Decode(&users);
+	err := json.NewDecoder(r.Body).Decode(&users)
 	if err != nil {
 		log.Print(&users)
 		respondWithError(w, http.StatusBadRequest, err.Error())
@@ -72,12 +90,30 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	var users Module.Users
+	err := json.NewDecoder(r.Body).Decode(&users)
+	if err != nil {
+		log.Print(&users)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := Module.Update(users); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, users)
+
+}
 
 func UpdateParking(w http.ResponseWriter, r *http.Request) {
-	defer  r.Body.Close()
+	defer r.Body.Close()
 
 	var parking MotoPark.MotoPark
-	err := 	json.NewDecoder(r.Body).Decode(&parking);
+	err := json.NewDecoder(r.Body).Decode(&parking)
 	if err != nil {
 		log.Print(&parking)
 		respondWithError(w, http.StatusBadRequest, err.Error())
@@ -92,7 +128,7 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func deleteParking(w http.ResponseWriter, r *http.Request)  {
+func deleteParking(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var parking MotoPark.MotoPark
 
@@ -132,23 +168,21 @@ func prog(state overseer.State) {
 	log.Printf("app (%s) listening...", state.ID)
 	r := mux.NewRouter()
 
+	r.HandleFunc("/home", LocationFisrtParking).Methods("GET")
 
-	r.HandleFunc("/home",LocationFisrtParking).Methods("GET")
+	r.HandleFunc("/users", FindAllUser).Methods("GET")
 
-	r.HandleFunc("/users",FindAllUser).Methods("GET")
+	r.HandleFunc("/users", InsertUser).Methods("POST")
 
-	r.HandleFunc("/users",InsertUser).Methods("POST")
+	r.HandleFunc("/users", UpdateUser).Methods("PUT")
 
-	//r.HandleFunc("/users",InsertUser).Methods("POST")
-
-	r.HandleFunc("/parkings",UpdateParking).Methods("POST")
+	r.HandleFunc("/parkings", UpdateParking).Methods("POST")
 
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 	http.Serve(state.Listener, r)
-
 
 }
 
@@ -162,6 +196,5 @@ func main() {
 			Interval: 1 * time.Second,
 		},
 	})
-
 
 }
