@@ -52,9 +52,10 @@ func FindById(userID string) (MotoPark, error)  {
 	err := db.C(COLLECTION).Find(bson.M{"_id":bson.ObjectIdHex(userID)}).One(&user)
 	return user, err
 }
-func Insert(user MotoPark) (error)  {
 
-	err := db.C(COLLECTION).Insert(user)
+func Insert(park MotoPark) (error)  {
+
+	err := db.C(COLLECTION).Insert(park)
 	return  err
 }
 

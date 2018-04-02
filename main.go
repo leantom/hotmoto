@@ -51,6 +51,7 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 
 	parking.ID = bson.NewObjectId()
 	if err := MotoPark.Insert(parking); err != nil {
+		log.Print(&parking)
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -176,7 +177,9 @@ func prog(state overseer.State) {
 
 	r.HandleFunc("/users", UpdateUser).Methods("PUT")
 
-	r.HandleFunc("/parkings", UpdateParking).Methods("POST")
+	r.HandleFunc("/parkings", InsertParking).Methods("POST")
+
+	r.HandleFunc("/parkings", UpdateParking).Methods("PUT")
 
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
 
