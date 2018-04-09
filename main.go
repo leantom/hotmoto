@@ -39,7 +39,6 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	fmt.Print(res)
 	respondWithJson(w, http.StatusOK, res)
 }
-
 func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	var findingNear MotoPark.FindingNearLocation
 	err := json.NewDecoder(r.Body).Decode(&findingNear)
