@@ -27,6 +27,7 @@ import (
 
 // Fetch Example
 
+
 func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
 	res, err := MotoPark.FindAll()
@@ -37,6 +38,22 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Print(res)
 	respondWithJson(w, http.StatusOK, res)
+}
+
+func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
+	var findingNear MotoPark.FindingNearLocation
+	err := json.NewDecoder(r.Body).Decode(&findingNear)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	 result,err := MotoPark.FindNearLocationParking(findingNear)
+	 if err != nil {
+		 respondWithError(w, http.StatusInternalServerError, err.Error())
+		 return
+	 }
+
+	 respondWithJson(w, http.StatusCreated, result)
 }
 
 func InsertParking(w http.ResponseWriter, r *http.Request) {
@@ -182,6 +199,8 @@ func prog(state overseer.State) {
 	r.HandleFunc("/parkings", UpdateParking).Methods("PUT")
 
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
+
+	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 

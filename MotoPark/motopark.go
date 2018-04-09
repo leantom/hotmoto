@@ -1,24 +1,31 @@
 package MotoPark
 
 import (
-	"gopkg.in/mgo.v2/bson"
-	"log"
-	"gopkg.in/mgo.v2"
 	"fmt"
+	"log"
+
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type MotoPark struct {
-	ID          bson.ObjectId `bson:"_id" json:"id"`
-	Position  [2]float64 `bson:"position" json:"position"`
-	Name  		string        `bson:"name" json:"name"`
-	Address string `bson:"address" json:"address"`
-	Phone string `bson:"phone" json:"phone"`
-	Cost string `bson:"cost" json:"cost"`
-	Total int `bson:"total" json:"total"`
+	ID       bson.ObjectId `bson:"_id" json:"id"`
+	Position [2]float64    `bson:"position" json:"position"`
+	Name     string        `bson:"name" json:"name"`
+	Address  string        `bson:"address" json:"address"`
+	Phone    string        `bson:"phone" json:"phone"`
+	Cost     string        `bson:"cost" json:"cost"`
+	Total    int           `bson:"total" json:"total"`
 }
 
-const  (
-	DB = "hotmoto_db"
+type FindingNearLocation struct {
+	long int
+	lat int
+	scope int
+}
+
+const (
+	DB         = "hotmoto_db"
 	COLLECTION = "motopark"
 )
 
@@ -34,8 +41,7 @@ func init() {
 
 }
 
-
-func FindAll() ([]MotoPark, error)  {
+func FindAll() ([]MotoPark, error) {
 
 	var users []MotoPark
 	err := db.C(COLLECTION).Find(bson.M{}).All(&users)
@@ -47,51 +53,44 @@ func FindAll() ([]MotoPark, error)  {
 	return users, err
 }
 
-func FindById(userID string) (MotoPark, error)  {
+func FindById(userID string) (MotoPark, error) {
 	var user MotoPark
-	err := db.C(COLLECTION).Find(bson.M{"_id":bson.ObjectIdHex(userID)}).One(&user)
+	err := db.C(COLLECTION).Find(bson.M{"_id": bson.ObjectIdHex(userID)}).One(&user)
 	return user, err
 }
 
-func Insert(park MotoPark) (error)  {
+func Insert(park MotoPark) error {
 
 	err := db.C(COLLECTION).Insert(park)
-	return  err
+	return err
 }
 
-func Update(user MotoPark) (error)  {
+func Update(user MotoPark) error {
 
 	err := db.C(COLLECTION).UpdateId(user.ID, &user)
-	return  err
+	return err
 }
-func Delete(userID string) ( error)  {
+func Delete(userID string) error {
 
 	err := db.C(COLLECTION).RemoveId(userID)
 	return err
 }
 
-func  FindNearLocationParking() ([]MotoPark, error) {
+func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, error) {
 	var parks []MotoPark
-
-	// search criteria
-	long := -73.8601152
-	lat := 	40.7311739
-
-	scope := 3000 // max distance in metres
 
 	collection := db.C(COLLECTION)
 
 	err := collection.Find(bson.M{
-		"location" : bson.M{
-			"$nearSphere":bson.M{
+		"location": bson.M{
+			"$nearSphere": bson.M{
 				"$geometry": bson.M{
-					"coordinates": []float64{long, lat},
+					"coordinates": []float64{findingLocation.long, findingLocation.lat},
 				},
-				"$maxDistance": scope,
+				"$maxDistance": findingLocation.scope,
 			},
 		},
 	}).Limit(10).All(&parks)
-
 
 	return parks, err
 }
