@@ -202,7 +202,7 @@ func prog(state overseer.State) {
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
-	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
+	r.HandleFunc("/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("GET")
 
 	http.Serve(state.Listener, r)
 
