@@ -19,9 +19,9 @@ type MotoPark struct {
 }
 
 type FindingNearLocation struct {
-	long int
-	lat int
-	scope int
+	long float64
+	lat float64
+	scope float64
 }
 
 const (
