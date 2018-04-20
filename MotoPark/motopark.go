@@ -25,7 +25,6 @@ type MotoPark struct {
 		Type        string `json:"type"`
 		Coordinates []float64  `json:"coordinates"`
 	} `json:"location"`
-	Coordinates []float64  `json:"coordinates"`
 	Name        string `json:"name"`
 	Address     string `json:"address"`
 	Phone       string `json:"phone"`
