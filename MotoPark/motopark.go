@@ -19,8 +19,7 @@ type MotoPark struct {
 }
 
 type FindingNearLocation struct {
-	long float64 `bson:"long" json:"long"`
-	lat float64 `bson:"lat" json:"lat"`
+	Position [2]float64    `bson:"position" json:"position"`
 	scope float64 `bson:"scope" json:"scope"`
 }
 
@@ -80,14 +79,13 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	var parks []MotoPark
 
 	collection := db.C(COLLECTION)
-	log.Print(findingLocation.long)
-	log.Print(findingLocation.lat)
+
 
 	err := collection.Find(bson.M{
 		"location": bson.M{
 			"$nearSphere": bson.M{
 				"$geometry": bson.M{
-					"coordinates": []float64{findingLocation.long, findingLocation.lat},
+					"coordinates": findingLocation.Position,
 				},
 				"$maxDistance": findingLocation.scope,
 			},
