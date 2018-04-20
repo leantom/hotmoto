@@ -52,7 +52,11 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 		 return
 	 }
 
-	 respondWithJson(w, http.StatusCreated, result)
+	if len(result) == 0 {
+		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
+		return
+	}
+	respondWithJson(w, http.StatusCreated, result)
 }
 
 func InsertParking(w http.ResponseWriter, r *http.Request) {
