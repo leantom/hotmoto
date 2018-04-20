@@ -19,8 +19,8 @@ type MotoPark struct {
 }
 
 type PositionParking struct {
-	Type     string        `bson:"type" json:"type"`
-	coordinates []float64    `bson:"coordinates" json:"coordinates"`
+	Type     string        `json:"type"`
+	coordinates [2]float64    `json:"coordinates"`
 }
 
 type FindingNearLocation struct {
