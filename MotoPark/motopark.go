@@ -80,6 +80,8 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	var parks []MotoPark
 
 	collection := db.C(COLLECTION)
+	log.Print(findingLocation.long)
+	log.Print(findingLocation.lat)
 
 	err := collection.Find(bson.M{
 		"location": bson.M{

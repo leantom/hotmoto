@@ -43,7 +43,7 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	var findingNear MotoPark.FindingNearLocation
 	err := json.NewDecoder(r.Body).Decode(&findingNear)
 	if err != nil {
-		log.Print(&findingNear)
+
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
