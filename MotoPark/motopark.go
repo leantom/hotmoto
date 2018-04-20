@@ -19,9 +19,9 @@ type MotoPark struct {
 }
 
 type FindingNearLocation struct {
-	long float64
-	lat float64
-	scope float64
+	long float64 `bson:"long" json:"long"`
+	lat float64 `bson:"lat" json:"lat"`
+	scope float64 `bson:"scope" json:"scope"`
 }
 
 const (
