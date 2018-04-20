@@ -69,10 +69,10 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	log.Print(&parking)
 	parking.ID = bson.NewObjectId()
 	if err := MotoPark.Insert(parking); err != nil {
-		log.Print(&parking)
+
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
