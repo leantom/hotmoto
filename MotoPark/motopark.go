@@ -23,9 +23,9 @@ type MotoPark struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
 	Location struct {
 		Type        string `json:"type"`
-		Coordinates []int  `json:"coordinates"`
+		Coordinates []float64  `json:"coordinates"`
 	} `json:"location"`
-	Coordinates []int  `json:"coordinates"`
+	Coordinates []float64  `json:"coordinates"`
 	Name        string `json:"name"`
 	Address     string `json:"address"`
 	Phone       string `json:"phone"`
