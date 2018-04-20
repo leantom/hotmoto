@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/jpillora/overseer/fetcher"
+	"io/ioutil"
 )
 
 // Represents a movie, we uses bson keyword to tell the mgo driver how to name
@@ -63,7 +64,15 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 func InsertParking(w http.ResponseWriter, r *http.Request) {
 
 	var parking MotoPark.MotoPark
-	err := json.NewDecoder(r.Body).Decode(&parking)
+	body, errRead :=  ioutil.ReadAll(r.Body)
+
+	if errRead != nil {
+		respondWithError(w, http.StatusBadRequest, errRead.Error())
+		return
+	}
+
+	err := json.Unmarshal(body,&parking)
+
 	if err != nil {
 		log.Print(&parking)
 		respondWithError(w, http.StatusBadRequest, err.Error())
