@@ -10,12 +10,17 @@ import (
 
 type MotoPark struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
-	Position [2]float64    `bson:"position" json:"position"`
+	Position PositionParking `bson:"position" json:"position"`
 	Name     string        `bson:"name" json:"name"`
 	Address  string        `bson:"address" json:"address"`
 	Phone    string        `bson:"phone" json:"phone"`
 	Cost     string        `bson:"cost" json:"cost"`
 	Total    int           `bson:"total" json:"total"`
+}
+
+type PositionParking struct {
+	Type     string        `bson:"type" json:"type"`
+	coordinates [2]float64    `bson:"coordinates" json:"coordinates"`
 }
 
 type FindingNearLocation struct {
