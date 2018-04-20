@@ -8,16 +8,30 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//type MotoPark struct {
+//	ID       bson.ObjectId `bson:"_id" json:"id"`
+//	Location PositionParking `bson:"location" json:"location"`
+//	coordinates [2]float64  ` bson:"coordinates" json:"coordinates"`
+//	Name     string        `bson:"name" json:"name"`
+//	Address  string        `bson:"address" json:"address"`
+//	Phone    string        `bson:"phone" json:"phone"`
+//	Cost     string        `bson:"cost" json:"cost"`
+//	Total    int           `bson:"total" json:"total"`
+//}
+
 type MotoPark struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
-	Location PositionParking `bson:"location" json:"location"`
-	coordinates [2]float64  ` bson:"coordinates" json:"coordinates"`
-	Name     string        `bson:"name" json:"name"`
-	Address  string        `bson:"address" json:"address"`
-	Phone    string        `bson:"phone" json:"phone"`
-	Cost     string        `bson:"cost" json:"cost"`
-	Total    int           `bson:"total" json:"total"`
+	Location struct {
+		Type        string `json:"type"`
+		Coordinates []int  `json:"coordinates"`
+	} `json:"location"`
+	Coordinates []int  `json:"coordinates"`
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Phone       string `json:"phone"`
+	Total       int    `json:"total"`
 }
+
 
 type PositionParking struct {
 	Type     string        `json:"type"`
