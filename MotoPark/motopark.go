@@ -10,7 +10,7 @@ import (
 
 type MotoPark struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
-	Position PositionParking `bson:"position" json:"position"`
+	Location PositionParking `bson:"location" json:"location"`
 	Name     string        `bson:"name" json:"name"`
 	Address  string        `bson:"address" json:"address"`
 	Phone    string        `bson:"phone" json:"phone"`
