@@ -80,7 +80,7 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 
 	collection := db.C(COLLECTION)
 
-
+	log.Print(findingLocation.Position)
 	err := collection.Find(bson.M{
 		"location": bson.M{
 			"$nearSphere": bson.M{
