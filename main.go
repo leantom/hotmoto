@@ -21,6 +21,7 @@ import (
 
 	"github.com/jpillora/overseer/fetcher"
 	"io/ioutil"
+
 )
 
 // Represents a movie, we uses bson keyword to tell the mgo driver how to name
@@ -216,6 +217,8 @@ func prog(state overseer.State) {
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
 	r.HandleFunc("/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("POST")
+
+	r.HandleFunc("/uploads", Module.UploadFiles).Methods("POST")
 
 	http.Serve(state.Listener, r)
 

@@ -8,17 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-//type MotoPark struct {
-//	ID       bson.ObjectId `bson:"_id" json:"id"`
-//	Location PositionParking `bson:"location" json:"location"`
-//	coordinates [2]float64  ` bson:"coordinates" json:"coordinates"`
-//	Name     string        `bson:"name" json:"name"`
-//	Address  string        `bson:"address" json:"address"`
-//	Phone    string        `bson:"phone" json:"phone"`
-//	Cost     string        `bson:"cost" json:"cost"`
-//	Total    int           `bson:"total" json:"total"`
-//}
-
 type MotoPark struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
 	Location struct {
@@ -98,14 +87,23 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	var parks []MotoPark
 
 	collection := db.C(COLLECTION)
-
+//106.6550042107701,10.84016655975481
+// "$nearSphere": bson.M{
+	//                "$geometry": bson.M{
+	//                    "type":        "Point",
+	//                    "coordinates": []float64{long, lat},
+	//                },
+	//                "$maxDistance": scope,
+	//            },
+	long := findingLocation.Position[0]
+	lat :=  findingLocation.Position[1]
 	log.Print(findingLocation.Position)
 	err := collection.Find(bson.M{
 		"location": bson.M{
 			"$nearSphere": bson.M{
 				"$geometry": bson.M{
 					"type":        "Point",
-					"coordinates":  findingLocation.Position,
+					"coordinates":  []float64{long, lat},
 				},
 				"$maxDistance": findingLocation.scope,
 			},
