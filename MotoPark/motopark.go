@@ -105,7 +105,6 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 					"type":        "Point",
 					"coordinates":  []float64{long, lat},
 				},
-				"$maxDistance": findingLocation.scope,
 			},
 		},
 	}).Limit(100).All(&parks)
