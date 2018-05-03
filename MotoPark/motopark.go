@@ -104,6 +104,7 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 				"$geometry": bson.M{
 					"type":        "Point",
 					"coordinates":  []float64{long, lat},
+					"$maxDistance": 300000,
 				},
 			},
 		},
