@@ -28,7 +28,7 @@ type PositionParking struct {
 
 type FindingNearLocation struct {
 	Position [2]float64    `bson:"position" json:"position"`
-	scope float64 `bson:"scope" json:"scope"`
+	Scope int `bson:"scope" json:"scope"`
 }
 
 const (
@@ -97,9 +97,9 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	//            },
 	long := findingLocation.Position[0]
 	lat :=  findingLocation.Position[1]
-	log.Print(findingLocation.scope)
-	scope := findingLocation.scope
 
+	scope := findingLocation.Scope
+	log.Print(findingLocation.Scope)
 	err := collection.Find(bson.M{
 		"location": bson.M{
 			"$nearSphere": bson.M{

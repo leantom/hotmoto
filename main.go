@@ -49,6 +49,7 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
+
 	 result,err := MotoPark.FindNearLocationParking(findingNear)
 	 if err != nil {
 		 respondWithError(w, http.StatusInternalServerError, err.Error())
