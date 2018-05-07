@@ -99,18 +99,19 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	lat :=  findingLocation.Position[1]
 
 	scope := findingLocation.Scope
-	log.Print(findingLocation.Scope)
+	log.Print(findingLocation.Position)
 	err := collection.Find(bson.M{
 		"location": bson.M{
 			"$nearSphere": bson.M{
 				"$geometry": bson.M{
 					"type":        "Point",
 					"coordinates":  []float64{long, lat},
-					"$maxDistance": scope,
+
 				},
+				"$maxDistance": scope,
 			},
 		},
-	}).Limit(100).All(&parks)
+	}).All(&parks)
 
 	return parks, err
 }

@@ -51,6 +51,7 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	 result,err := MotoPark.FindNearLocationParking(findingNear)
+
 	 if err != nil {
 		 respondWithError(w, http.StatusInternalServerError, err.Error())
 		 return
@@ -59,6 +60,10 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	if len(result) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
+	} else {
+		for i := 0; i< len(result) ;i++  {
+			result[i].Total = len(result)
+		}
 	}
 	respondWithJson(w, http.StatusCreated, result)
 }
