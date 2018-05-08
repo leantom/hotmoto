@@ -117,7 +117,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if users.Password != usercurrent.Password {
+	hashPwd,errHashPwd := Module.Generate(users.Password)
+	log.Print(hashPwd)
+	if errHashPwd != nil {
+		respondWithError(w, http.StatusInternalServerError, "Lỗi hệ thống vui lòng thử lại sau")
+		return
+	}
+
+	errCompare := Module.Compare(hashPwd,usercurrent.Password)
+	if  errCompare != nil {
 		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
 		return
 	}
@@ -151,6 +159,17 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	if len(users.Password) == 0 || len(users.Username) == 0 {
+		respondWithError(w, http.StatusInternalServerError, "Không được để rỗng Username hoặc Password")
+		return
+	}
+
+	_,errExist := Module.FindById(users.Username)
+	if errExist == nil{
+		respondWithError(w, http.StatusInternalServerError, "Username đã tồn tại")
+		return
+	}
+
 	users.ID = bson.NewObjectId()
 
 	if err := Module.Insert(users); err != nil {
