@@ -73,6 +73,8 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 	var parking MotoPark.MotoPark
 	body, errRead :=  ioutil.ReadAll(r.Body)
 	log.Print(r.Body)
+
+
 	if errRead != nil {
 		respondWithError(w, http.StatusBadRequest, errRead.Error())
 		return
@@ -94,6 +96,34 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJson(w, http.StatusCreated, parking)
 }
+//login
+func Login(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	var users Module.UserService
+	log.Print(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&users)
+
+	if err != nil {
+		log.Print(&users)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	usercurrent, errUser := Module.FindById(users.Username)
+
+	if errUser != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if users.Password != usercurrent.Password {
+		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
+		return
+	}
+
+	respondWithJson(w, http.StatusCreated, usercurrent)
+}
 
 func FindAllUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -111,7 +141,10 @@ func FindAllUser(w http.ResponseWriter, r *http.Request) {
 func InsertUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	var users Module.Users
+	var users Module.User
+
+	log.Print(json.NewDecoder(r.Body))
+
 	err := json.NewDecoder(r.Body).Decode(&users)
 	if err != nil {
 		log.Print(&users)
@@ -131,7 +164,7 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	var users Module.Users
+	var users Module.User
 	err := json.NewDecoder(r.Body).Decode(&users)
 	if err != nil {
 		log.Print(&users)
@@ -210,7 +243,9 @@ func prog(state overseer.State) {
 
 	r.HandleFunc("/users", FindAllUser).Methods("GET")
 
-	r.HandleFunc("/users", InsertUser).Methods("POST")
+	r.HandleFunc("/users/login", Login).Methods("POST")
+
+	r.HandleFunc("/users/register", InsertUser).Methods("POST")
 
 	r.HandleFunc("/users", UpdateUser).Methods("PUT")
 
