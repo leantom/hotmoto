@@ -21,6 +21,7 @@ type MotoPark struct {
 	AvailableSlot int `json:"AvailableSlot"`
 	OpenTime     string `json:"openTime"`
 	CloseTime     string `json:"closeTime"`
+	Status int `json:"status"`
 }
 
 
