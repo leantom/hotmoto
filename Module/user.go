@@ -67,7 +67,6 @@ func Compare(hash string, s string) error {
 	return bcrypt.CompareHashAndPassword(existing, incoming)
 }
 
-
 func FindAll() ([]User, error)  {
 
 	var users []User
