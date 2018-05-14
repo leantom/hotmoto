@@ -19,8 +19,8 @@ type MotoPark struct {
 	Phone       string `json:"phone"`
 	Total       int    `json:"total"`
 	AvailableSlot int `json:"AvailableSlot"`
-	openTime     string `json:"openTime"`
-	closeTime     string `json:"closeTime"`
+	OpenTime     string `json:"openTime"`
+	CloseTime     string `json:"closeTime"`
 }
 
 
