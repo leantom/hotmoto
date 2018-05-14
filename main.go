@@ -72,8 +72,6 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 
 	var parking MotoPark.MotoPark
 	body, errRead :=  ioutil.ReadAll(r.Body)
-	log.Print(r.Body)
-
 
 	if errRead != nil {
 		respondWithError(w, http.StatusBadRequest, errRead.Error())
@@ -83,7 +81,6 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(body,&parking)
 
 	if err != nil {
-		log.Print(&parking)
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
