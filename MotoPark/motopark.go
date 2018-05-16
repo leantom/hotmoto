@@ -24,7 +24,7 @@ type MotoPark struct {
 	Status int `json:"status"`
 	Fullname     string `json:"fullname"`
 	Username     string `json:"username"`
-	Email int `json:"email"`
+	Email string `json:"email"`
 	//
 }
 
