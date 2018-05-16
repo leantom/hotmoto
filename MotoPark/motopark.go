@@ -52,8 +52,19 @@ func init() {
 
 }
 
-func FindAll() ([]MotoPark, error) {
+func checkDBLostConnect() {
+	if db == nil {
+		session, err := mgo.Dial("localhost")
+		if err != nil {
+			fmt.Println("Failed to establish connection to Mongo server:", err)
+		}
+		fmt.Println("Mongo server connected")
+		db = session.DB(DB)
+	}
+}
 
+func FindAll() ([]MotoPark, error) {
+	checkDBLostConnect()
 	var users []MotoPark
 	err := db.C(COLLECTION).Find(bson.M{}).All(&users)
 	if err != nil {
