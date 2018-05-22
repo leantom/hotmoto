@@ -57,14 +57,14 @@ func init() {
 }
 
 func checkDBLostConnect() {
-	if db == nil {
+
 		session, err := mgo.Dial("localhost")
 		if err != nil {
 			fmt.Println("Failed to establish connection to Mongo server:", err)
 		}
 		fmt.Println("Mongo server connected")
 		db = session.DB(DB)
-	}
+
 }
 
 func FindAll() ([]MotoPark, error) {
