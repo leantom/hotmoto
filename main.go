@@ -9,7 +9,6 @@ import (
 
 	"gopkg.in/mgo.v2/bson"
 
-	"fmt"
 	"log"
 
 	"github.com/jpillora/overseer"
@@ -38,7 +37,7 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	fmt.Print(res)
+
 	respondWithJson(w, http.StatusOK, res)
 }
 func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
