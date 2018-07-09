@@ -65,8 +65,7 @@ func checkDBLostConnect() {
 		fmt.Println("Mongo server connected")
 		db = session.DB(DB)
 	}
-
-
+	
 }
 
 func FindAll() ([]MotoPark, error) {
@@ -82,9 +81,9 @@ func FindAll() ([]MotoPark, error) {
 }
 
 func FindById(userID string) (MotoPark, error) {
-	var user MotoPark
-	err := db.C(COLLECTION).Find(bson.M{"_id": bson.ObjectIdHex(userID)}).One(&user)
-	return user, err
+	var park MotoPark
+	err := db.C(COLLECTION).Find(bson.M{"username":userID}).One(&park)
+	return park, err
 }
 
 func Insert(park MotoPark) error {

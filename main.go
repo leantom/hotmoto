@@ -37,9 +37,17 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	if len(res) == 0 {
+		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
+		return
+	} else {
+		for i := 0; i< len(res) ;i++  {
+			res[i].Total = len(res)
+		}
+	}
 	respondWithJson(w, http.StatusOK, res)
 }
+
 func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	var findingNear MotoPark.FindingNearLocation
 	err := json.NewDecoder(r.Body).Decode(&findingNear)
@@ -140,6 +148,26 @@ func FindAllUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJson(w, http.StatusCreated, users)
+}
+
+type UserRequest struct {
+	Username string
+}
+
+func FindParkByUser(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var userRequest UserRequest
+	err := decoder.Decode(&userRequest)
+	if err != nil {
+		respondWithJson(w, http.StatusBadRequest, err.Error())
+		panic(err)
+	}
+	result, err := MotoPark.FindById(userRequest.Username)
+	if err != nil {
+		respondWithJson(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondWithJson(w, http.StatusCreated, result)
 }
 
 func InsertUser(w http.ResponseWriter, r *http.Request) {
@@ -271,6 +299,8 @@ func prog(state overseer.State) {
 	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
+
+	r.HandleFunc("/parkings/users", FindParkByUser).Methods("POST")
 
 	r.HandleFunc("/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("POST")
 
