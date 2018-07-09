@@ -162,7 +162,7 @@ func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 		respondWithJson(w, http.StatusBadRequest, err.Error())
 		panic(err)
 	}
-	result, err := MotoPark.FindById(userRequest.Username)
+	result, err := MotoPark.FindParksByUserID(userRequest.Username)
 	if err != nil {
 		respondWithJson(w, http.StatusBadRequest, err.Error())
 		return

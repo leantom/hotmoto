@@ -80,7 +80,13 @@ func FindAll() ([]MotoPark, error) {
 	return users, err
 }
 
-func FindById(userID string) ([]MotoPark, error) {
+func FindById(userID string) (MotoPark, error) {
+	var park MotoPark
+	err := db.C(COLLECTION).Find(bson.M{"_id": bson.ObjectIdHex(userID)}).One(&park)
+	return park, err
+}
+
+func FindParksByUserID(userID string) ([]MotoPark, error) {
 	var parks []MotoPark
 	err := db.C(COLLECTION).Find(bson.M{"username":userID}).All(&parks)
 	return parks, err
@@ -107,14 +113,6 @@ func FindNearLocationParking(findingLocation FindingNearLocation) ([]MotoPark, e
 	var parks []MotoPark
 
 	collection := db.C(COLLECTION)
-//106.6550042107701,10.84016655975481
-// "$nearSphere": bson.M{
-	//                "$geometry": bson.M{
-	//                    "type":        "Point",
-	//                    "coordinates": []float64{long, lat},
-	//                },
-	//                "$maxDistance": scope,
-	//            },
 	long := findingLocation.Position[0]
 	lat :=  findingLocation.Position[1]
 
