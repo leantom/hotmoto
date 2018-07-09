@@ -154,7 +154,7 @@ type UserRequest struct {
 	Username string
 }
 
-func FindParkByUser(w http.ResponseWriter, r *http.Request) {
+func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var userRequest UserRequest
 	err := decoder.Decode(&userRequest)
@@ -300,7 +300,7 @@ func prog(state overseer.State) {
 
 	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
 
-	r.HandleFunc("/parkings/users", FindParkByUser).Methods("POST")
+	r.HandleFunc("/parkings/users", FindParksByUser).Methods("POST")
 
 	r.HandleFunc("/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("POST")
 

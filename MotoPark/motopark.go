@@ -80,10 +80,10 @@ func FindAll() ([]MotoPark, error) {
 	return users, err
 }
 
-func FindById(userID string) (MotoPark, error) {
-	var park MotoPark
-	err := db.C(COLLECTION).Find(bson.M{"username":userID}).One(&park)
-	return park, err
+func FindById(userID string) ([]MotoPark, error) {
+	var parks []MotoPark
+	err := db.C(COLLECTION).Find(bson.M{"username":userID}).All(&parks)
+	return parks, err
 }
 
 func Insert(park MotoPark) error {
