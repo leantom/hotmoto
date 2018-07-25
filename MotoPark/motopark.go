@@ -25,6 +25,7 @@ type MotoPark struct {
 	Fullname     string `json:"fullname"`
 	Username     string `json:"username"`
 	Email string `json:"email"`
+	ImageURL string `json:"imageUrl"`
 	//
 }
 
