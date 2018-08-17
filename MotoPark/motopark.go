@@ -23,7 +23,7 @@ type MotoPark struct {
 	CloseTime     string `json:"closeTime"`
 	Status int `json:"status"`
 	Fullname     string `json:"fullname"`
-	CostPerHour int `json:"costPerHour"`
+	Cost int `json:"cost"`
 	NumberHours int `json:"numberHours"`
 	Username     string `json:"username"`
 	Email string `json:"email"`
