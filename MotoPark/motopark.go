@@ -31,7 +31,6 @@ type MotoPark struct {
 	Type int `json:"type"`
 }
 
-
 type PositionParking struct {
 	Type     string        `json:"type"`
 	coordinates [2]float64    `json:"coordinates"`
