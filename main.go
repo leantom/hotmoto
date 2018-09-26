@@ -242,6 +242,51 @@ func UpdateParking(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func UpdatePriceParking(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	var parkingRequest MotoPark.PriceParkRequest
+
+	err := json.NewDecoder(r.Body).Decode(&parkingRequest)
+	if err != nil {
+		log.Print(&parkingRequest)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	park,err := MotoPark.UpdateCost(parkingRequest.IdPark,parkingRequest.Cost)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJson(w, http.StatusCreated, park)
+
+}
+
+func UpdateSlotParking(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	var parkingSlotRequest MotoPark.SlotParkRequest
+
+	err := json.NewDecoder(r.Body).Decode(&parkingSlotRequest)
+	if err != nil {
+		log.Print(&parkingSlotRequest)
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	park,err := MotoPark.UpdateAvailableSlot(parkingSlotRequest.IdPark,parkingSlotRequest.Slot)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJson(w, http.StatusCreated, park)
+
+}
+
+
 func deleteParking(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var parking MotoPark.MotoPark
@@ -293,6 +338,10 @@ func prog(state overseer.State) {
 	r.HandleFunc("/users", UpdateUser).Methods("PUT")
 
 	r.HandleFunc("/parkings", InsertParking).Methods("POST")
+
+	r.HandleFunc("/parkings/updateCost", UpdatePriceParking).Methods("POST")
+
+	r.HandleFunc("/parkings/updateSlot", UpdateSlotParking).Methods("POST")
 
 	r.HandleFunc("/parkings", UpdateParking).Methods("PUT")
 

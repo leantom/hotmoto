@@ -28,7 +28,25 @@ type MotoPark struct {
 	Username     string `json:"username"`
 	Email string `json:"email"`
 	ImageURL string `json:"imageUrl"`
+	DescriptionPark string `json:"description"`
 	Type int `json:"type"`
+}
+
+type PriceParkRequest struct {
+	Cost int `json:"cost"`
+	IdPark string `json:"id_park"`
+}
+
+type SlotParkRequest struct {
+	Slot int `json:"slot"`
+	IdPark string `json:"id_park"`
+}
+
+type SlotPark struct {
+	ID       bson.ObjectId `bson:"_id" json:"id"`
+	AvailableSlot int `json:"available_slot"`
+	ParkID string `json:"park_id"`
+	MaximumSlot int `json:"maximum_slot"`
 }
 
 type PositionParking struct {
@@ -100,11 +118,30 @@ func Insert(park MotoPark) error {
 	return err
 }
 
-func Update(user MotoPark) error {
-
-	err := db.C(COLLECTION).UpdateId(user.ID, &user)
+func Update(park MotoPark) error {
+	err := db.C(COLLECTION).UpdateId(park.ID, &park)
 	return err
 }
+
+func UpdateCost(parkId string,cost int) (MotoPark, error) {
+	var park MotoPark
+	err := db.C(COLLECTION).Find(bson.M{"_id": bson.ObjectIdHex(parkId)}).One(&park)
+	park.Cost = cost
+	return  park,err
+}
+
+func UpdateAvailableSlot(parkId string,slot int)  (MotoPark, error) {
+	var park MotoPark
+	err := db.C(COLLECTION).Find(bson.M{"_id": bson.ObjectIdHex(parkId)}).One(&park)
+	if slot >= park.Total {
+		park.AvailableSlot = 0
+	} else {
+		park.AvailableSlot = slot
+	}
+	return  park,err
+}
+
+
 func Delete(userID string) error {
 
 	err := db.C(COLLECTION).RemoveId(userID)
