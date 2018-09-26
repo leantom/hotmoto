@@ -136,7 +136,7 @@ func UpdateAvailableSlot(parkId string,slot int)  (MotoPark, error) {
 	if slot >= park.Total {
 		park.AvailableSlot = 0
 	} else {
-		park.AvailableSlot = slot
+		park.AvailableSlot = park.Total - slot
 	}
 	return  park,err
 }
