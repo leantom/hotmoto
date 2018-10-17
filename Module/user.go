@@ -15,7 +15,7 @@ import (
 )
 
 type User struct {
-	ID          bson.ObjectId `bson:"_id" json:"id"`
+	ID          bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	Username string        `bson:"username" json:"username"`
 	Password string        `bson:"password" json:"password"`
 	DeviceToken string        `bson:"devicetoken" json:"devicetoken"`
@@ -111,7 +111,7 @@ func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	var user User
 
 	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
-	println(userID)
+	println(err.Error())
 	if err == nil {
 		user.DeviceToken = deviceToken
 	}
