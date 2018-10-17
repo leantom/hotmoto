@@ -112,6 +112,7 @@ func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	var user User
 	println(userID)
 	println(deviceToken)
+
 	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
 	println(err.Error())
 	if err == nil {
@@ -174,9 +175,8 @@ func RegisterDeviceTokenByUserID(w http.ResponseWriter, r *http.Request) {
 		respondWithJson(w, http.StatusBadRequest, err.Error())
 		panic(err)
 	}
-	println(registerDeviceToken.UserID)
-	println(registerDeviceToken.DeviceToken)
-	err = RegisterDeviceToken(registerDeviceToken.UserID,registerDeviceToken.DeviceToken)
+
+	err = DeleteDeviceToken(registerDeviceToken.UserID)
 	if err != nil {
 		respondWithJson(w, http.StatusNotFound, err.Error())
 		return
