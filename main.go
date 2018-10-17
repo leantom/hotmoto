@@ -153,6 +153,8 @@ type UserRequest struct {
 	Username string
 }
 
+
+
 func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var userRequest UserRequest
@@ -328,7 +330,7 @@ func prog(state overseer.State) {
 	log.Printf("app (%s) listening...", state.ID)
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
+
 
 	r.HandleFunc("/home", LocationFisrtParking).Methods("GET")
 
@@ -359,7 +361,11 @@ func prog(state overseer.State) {
 	r.HandleFunc("/uploads", Module.UploadFiles).Methods("POST")
 
 	// push notification
+	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
 
+	r.HandleFunc("/api/deleteDeviceToken",Module.DeleteDeviceTokenByUserID).Methods("POST")
+
+	r.HandleFunc("/api/registerDeviceToken",Module.RegisterDeviceTokenByUserID).Methods("POST")
 
 	http.Serve(state.Listener, r)
 

@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"strings"
 	"errors"
+	"net/http"
+	"encoding/json"
 )
 
 type User struct {
@@ -86,6 +88,7 @@ func FindById(username string) (User, error)  {
 	err := db.C(COLLECTION).Find(bson.M{"username":username}).One(&user)
 	return user, err
 }
+
 func Insert(user User) (error)  {
 
 	err := db.C(COLLECTION).Insert(user)
@@ -97,8 +100,78 @@ func Update(user User) (error)  {
 	err := db.C(COLLECTION).UpdateId(user.ID, &user)
 	return  err
 }
+
 func Delete(userID string) ( error)  {
 
 	err := db.C(COLLECTION).RemoveId(userID)
 	return err
+}
+
+func RegisterDeviceToken(userID string, deviceToken string) (error) {
+	var user User
+
+	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
+	println(user.DeviceToken)
+	if err == nil {
+		user.DeviceToken = deviceToken
+	}
+	err = Update(user)
+	return  err
+}
+
+func DeleteDeviceToken(userID string) (error) {
+	var user User
+
+	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
+	println(user.DeviceToken)
+	if err == nil {
+		user.DeviceToken = ""
+	}
+	err = Update(user)
+	return  err
+}
+
+type UserIDRequest struct {
+	UserID string `bson:"userID" json:"userID"`
+}
+
+type RegisterDeviceTokenRequest struct {
+	UserID string `bson:"userID" json:"userID"`
+	DeviceToken string `bson:"deviceToken" json:"deviceToken"`
+}
+
+func DeleteDeviceTokenByUserID(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var userRequest UserIDRequest
+	err := decoder.Decode(&userRequest)
+
+	if err != nil {
+		respondWithJson(w, http.StatusBadRequest, err.Error())
+		panic(err)
+	}
+
+	err = DeleteDeviceToken(userRequest.UserID)
+	if err != nil {
+		respondWithJson(w, http.StatusNotFound, err.Error())
+		return
+	}
+	respondWithJson(w, 200, "Xoá thành công")
+}
+
+func RegisterDeviceTokenByUserID(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var registerDeviceToken RegisterDeviceTokenRequest
+	err := decoder.Decode(&registerDeviceToken)
+
+	if err != nil {
+		respondWithJson(w, http.StatusBadRequest, err.Error())
+		panic(err)
+	}
+
+	err = RegisterDeviceToken(registerDeviceToken.UserID,registerDeviceToken.DeviceToken)
+	if err != nil {
+		respondWithJson(w, http.StatusNotFound, err.Error())
+		return
+	}
+	respondWithJson(w, 200, "Đăng kí thành công")
 }
