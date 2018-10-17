@@ -116,7 +116,7 @@ func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	if err == nil {
 		//user.DeviceToken = deviceToken
 	}
-	err = db.C(COLLECTION).UpdateId(user.ID,&user)
+	//err = db.C(COLLECTION).UpdateId(user.ID,&user)
 
 	return  err
 }
