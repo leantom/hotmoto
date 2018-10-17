@@ -16,11 +16,10 @@ import (
 	"./Module"
 	"./MotoPark"
 
-	"time"
-
-	"github.com/jpillora/overseer/fetcher"
 	"io/ioutil"
 
+	"github.com/jpillora/overseer/fetcher"
+	"time"
 )
 
 // Represents a movie, we uses bson keyword to tell the mgo driver how to name
@@ -311,6 +310,8 @@ func deleteParking(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
+
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJson(w, code, map[string]string{"error": msg})
 }
@@ -326,6 +327,8 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 func prog(state overseer.State) {
 	log.Printf("app (%s) listening...", state.ID)
 	r := mux.NewRouter()
+
+	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
 
 	r.HandleFunc("/home", LocationFisrtParking).Methods("GET")
 
@@ -355,6 +358,9 @@ func prog(state overseer.State) {
 
 	r.HandleFunc("/uploads", Module.UploadFiles).Methods("POST")
 
+	// push notification
+
+
 	http.Serve(state.Listener, r)
 
 }
@@ -371,3 +377,5 @@ func main() {
 	})
 
 }
+
+
