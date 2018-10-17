@@ -122,6 +122,7 @@ func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	println("3")
 	err = db.C(COLLECTION).UpdateId(user.ID,&user)
 	println("4")
+
 	return  err
 }
 
