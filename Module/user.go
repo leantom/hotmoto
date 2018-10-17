@@ -114,7 +114,7 @@ func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
 	println(err.Error())
 	if err == nil {
-		user.DeviceToken = deviceToken
+		//user.DeviceToken = deviceToken
 	}
 	err = db.C(COLLECTION).UpdateId(user.ID,&user)
 
