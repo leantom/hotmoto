@@ -110,14 +110,18 @@ func Delete(userID string) ( error)  {
 
 func RegisterDeviceToken(userID string, deviceToken string) (error) {
 	var user User
-
+	println(userID)
+	println(deviceToken)
 	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(userID)).One(&user)
 	println(err.Error())
 	if err == nil {
+		println("1")
 		user.DeviceToken = deviceToken
+		println("2")
 	}
+	println("3")
 	err = db.C(COLLECTION).UpdateId(user.ID,&user)
-
+	println("4")
 	return  err
 }
 
