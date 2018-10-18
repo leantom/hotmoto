@@ -104,7 +104,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	var users Module.UserService
-	log.Print(r.Body)
+
 	err := json.NewDecoder(r.Body).Decode(&users)
 
 	if err != nil {
@@ -133,7 +133,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
 		return
 	}
-	Module.RegisterDeviceTokenv2(usercurrent.ID.String(),users.DeviceToken)
+
 	respondWithJson(w, http.StatusCreated, usercurrent)
 }
 
