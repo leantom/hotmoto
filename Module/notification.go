@@ -6,13 +6,48 @@ import (
 
 	"net/http"
 	"encoding/json"
+	"gopkg.in/mgo.v2/bson"
 )
-
+const  (
+	DEVICETOKEN_CENTER = "deviceTokenCenter"
+)
 const localhost  = "localhost:8080"
 type Notification struct  {
 	Title string        `bson:"title" json:"title"`
 	Content string        `bson:"content" json:"content"`
 	DeviceToken string     `bson:"deviceToken" json:"deviceToken"`
+}
+
+type DeviceTokenCenter struct {
+	ID          bson.ObjectId `bson:"_id" json:"id"`
+	UserID string        `bson:"username" json:"username"`
+	DeviceToken string        `bson:"device_token" json:"device_token"`
+	Total int        `bson:"total" json:"total"`
+}
+
+func InsertDeviceToken(requestDeviceToken RegisterDeviceTokenRequest)  {
+	var deviceToken DeviceTokenCenter
+	deviceToken.ID = bson.NewObjectId()
+	deviceToken.DeviceToken = requestDeviceToken.DeviceToken
+	deviceToken.UserID = requestDeviceToken.UserID
+	err := db.C(DEVICETOKEN_CENTER).Insert(deviceToken)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
+func SendAllDeviceNotification(notiRequest Notification)  {
+	var devices []DeviceTokenCenter
+	err := db.C(DEVICETOKEN_CENTER).Find(bson.M{}).All(&devices)
+
+	if err == nil {
+		 return 
+	}
+
+	for _, value := range devices {
+		notiRequest.DeviceToken = value.DeviceToken
+		SendPushToClient(notiRequest)
+	}
 }
 
 func PushNotificationSingle(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +104,6 @@ func SendPushToClient(notiRequest Notification) (NotificationResult)   {
 	result := NotificationResult{Alert:alert,Success:resp.Success,Error:resp.Error}
 	return  result
 }
-
 
 
 type NotificationResult struct  {

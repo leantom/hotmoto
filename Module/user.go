@@ -193,5 +193,6 @@ func RegisterDeviceTokenByUserID(w http.ResponseWriter, r *http.Request) {
 		respondWithJson(w, http.StatusNotFound, err.Error())
 		return
 	}
+	InsertDeviceToken(registerDeviceToken)
 	respondWithJson(w, 200, "Đăng kí thành công")
 }
