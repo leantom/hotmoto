@@ -28,7 +28,6 @@ type UserService struct {
 	DeviceToken string        `bson:"devicetoken" json:"devicetoken"`
 }
 
-
 const  (
 	DB = "hotmoto_db"
 	COLLECTION = "user"

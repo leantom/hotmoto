@@ -128,15 +128,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errCompare := Module.Compare(hashPwd,usercurrent.Password)
+
 	if  errCompare != nil {
 		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
 		return
 	}
-	if users.DeviceToken == "" {
-		respondWithError(w, http.StatusInternalServerError, "Không có device token ")
-		return
-	}
-	Module.RegisterDeviceTokenv2(usercurrent.ID.String(),usercurrent.DeviceToken)
+	Module.RegisterDeviceTokenv2(usercurrent.ID.String(),users.DeviceToken)
 	respondWithJson(w, http.StatusCreated, usercurrent)
 }
 
@@ -156,8 +153,6 @@ func FindAllUser(w http.ResponseWriter, r *http.Request) {
 type UserRequest struct {
 	Username string
 }
-
-
 
 func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
