@@ -109,12 +109,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(&users)
-		respondWithError(w, http.StatusBadRequest, err.Error())
+		respondWithError(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	usercurrent, errUser := Module.FindById(users.Username)
-
+	println(usercurrent.Username)
 	if errUser != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -132,7 +132,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
 		return
 	}
-//	Module.RegisterDeviceTokenv2(usercurrent.ID.String(),usercurrent.DeviceToken)
+	if users.DeviceToken == "" {
+		respondWithError(w, http.StatusInternalServerError, "Không có device token ")
+		return
+	}
+	Module.RegisterDeviceTokenv2(usercurrent.ID.String(),usercurrent.DeviceToken)
 	respondWithJson(w, http.StatusCreated, usercurrent)
 }
 
