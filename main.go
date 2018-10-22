@@ -331,33 +331,33 @@ func prog(state overseer.State) {
 
 
 
-	r.HandleFunc("/home", LocationFisrtParking).Methods("GET")
+	r.HandleFunc("api/home", LocationFisrtParking).Methods("GET")
 
-	r.HandleFunc("/users", FindAllUser).Methods("GET")
+	r.HandleFunc("api/users", FindAllUser).Methods("GET")
 
-	r.HandleFunc("/users/login", Login).Methods("POST")
+	r.HandleFunc("api/users/login", Login).Methods("POST")
 
-	r.HandleFunc("/users/register", InsertUser).Methods("POST")
+	r.HandleFunc("api/users/register", InsertUser).Methods("POST")
 
-	r.HandleFunc("/users", UpdateUser).Methods("PUT")
+	r.HandleFunc("api/users", UpdateUser).Methods("PUT")
 
-	r.HandleFunc("/parkings", InsertParking).Methods("POST")
+	r.HandleFunc("api/parkings", InsertParking).Methods("POST")
 
-	r.HandleFunc("/parkings/updateCost", UpdatePriceParking).Methods("POST")
+	r.HandleFunc("api/parkings/updateCost", UpdatePriceParking).Methods("POST")
 
-	r.HandleFunc("/parkings/updateSlot", UpdateSlotParking).Methods("POST")
+	r.HandleFunc("api/parkings/updateSlot", UpdateSlotParking).Methods("POST")
 
-	r.HandleFunc("/parkings", UpdateParking).Methods("PUT")
+	r.HandleFunc("api/parkings", UpdateParking).Methods("PUT")
 
-	r.HandleFunc("/parkings", deleteParking).Methods("DELETE")
+	r.HandleFunc("api/parkings", deleteParking).Methods("DELETE")
 
-	r.HandleFunc("/parkings", LocationFisrtParking).Methods("GET")
+	r.HandleFunc("api/parkings", LocationFisrtParking).Methods("GET")
 
-	r.HandleFunc("/parkings/users", FindParksByUser).Methods("POST")
+	r.HandleFunc("api/parkings/users", FindParksByUser).Methods("POST")
 
-	r.HandleFunc("/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("POST")
+	r.HandleFunc("api/parkings/getNearCurrents", FindingParkingWithCurrentLocation).Methods("POST")
 
-	r.HandleFunc("/uploads", Module.UploadFiles).Methods("POST")
+	r.HandleFunc("api/uploads", Module.UploadFiles).Methods("POST")
 
 	// push notification
 	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
