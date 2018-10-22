@@ -15,12 +15,13 @@ const localhost  = "localhost:8080"
 type Notification struct  {
 	Title string        `bson:"title" json:"title"`
 	Content string        `bson:"content" json:"content"`
+	UserName string        `bson:"username" json:"username"`
 	DeviceToken string     `bson:"deviceToken" json:"deviceToken"`
 }
 
 type DeviceTokenCenter struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
-	UserID string        `bson:"username" json:"username"`
+	UserID 	string        `bson:"username" json:"username"`
 	DeviceToken string        `bson:"device_token" json:"device_token"`
 	Total int        `bson:"total" json:"total"`
 }
@@ -55,12 +56,18 @@ func PushNotificationSingle(w http.ResponseWriter, r *http.Request) {
 	var notiRequest Notification
 
 	if err := json.NewDecoder(r.Body).Decode(&notiRequest); err != nil {
-		println(err.Error())
-		println(r.Body)
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	user,err := FindById(notiRequest.UserName)
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	notiRequest.DeviceToken = user.DeviceToken
 	result := SendPushToClient(notiRequest)
 
 	if result.Error != nil {
