@@ -143,9 +143,9 @@ func UpdateAvailableSlot(parkId string,slot int)  (MotoPark, error) {
 }
 
 
-func Delete(userID string) error {
+func Delete(parkingId string) error {
 
-	err := db.C(COLLECTION).RemoveId(userID)
+	err := db.C(COLLECTION).RemoveId(bson.ObjectIdHex(parkingId))
 	return err
 }
 

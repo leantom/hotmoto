@@ -289,29 +289,20 @@ func UpdateSlotParking(w http.ResponseWriter, r *http.Request) {
 
 func deleteParking(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	var parking MotoPark.MotoPark
+	var parking Module.UserFindIDRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&parking); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
-	currentParking, err := MotoPark.FindById(parking.ID.Hex())
-
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Not Found")
-		return
-	}
-
-	if err := MotoPark.Delete(currentParking.ID.Hex()); err != nil {
+	if err := MotoPark.Delete(parking.ID); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusCreated, "Sucessfully delete")
+	respondWithJson(w, 200, "Sucessfully delete")
 
 }
-
-
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJson(w, code, map[string]string{"error": msg})
@@ -328,8 +319,6 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 func prog(state overseer.State) {
 	log.Printf("app (%s) listening...", state.ID)
 	r := mux.NewRouter()
-
-
 
 	r.HandleFunc("/api/home", LocationFisrtParking).Methods("GET")
 
@@ -367,7 +356,6 @@ func prog(state overseer.State) {
 	r.HandleFunc("/api/registerDeviceToken",Module.RegisterDeviceTokenByUserID).Methods("POST")
 
 	http.Serve(state.Listener, r)
-
 }
 
 func main() {

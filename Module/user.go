@@ -21,6 +21,9 @@ type User struct {
 	DeviceToken string        `bson:"devicetoken" json:"devicetoken"`
 }
 
+type UserFindIDRequest struct {
+	ID string `bson:"_id" json:"id"`
+}
 
 type UserService struct {
 	Username string        `bson:"username" json:"username"`
