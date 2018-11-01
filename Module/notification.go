@@ -15,6 +15,7 @@ const localhost  = "localhost:8080"
 type Notification struct  {
 	Title string        `bson:"title" json:"title"`
 	Content string        `bson:"content" json:"content"`
+	PhoneNumberSender string        `bson:"phoneNumberSender" json:"phoneNumberSender"`
 	UserName string        `bson:"username" json:"username"`
 	DeviceToken string     `bson:"deviceToken" json:"deviceToken"`
 }
@@ -76,9 +77,34 @@ func PushNotificationSingle(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJson(w,200,result)
 
-
 }
 
+func PushNotificationBookParking(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	var notiRequest Notification
+
+	if err := json.NewDecoder(r.Body).Decode(&notiRequest); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	user,err := FindById(notiRequest.UserName)
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	notiRequest.DeviceToken = user.DeviceToken
+	result := SendPushToClient(notiRequest)
+
+	if result.Error != nil {
+		respondWithError(w, http.StatusBadRequest, result.Error.Error())
+		return
+	}
+	respondWithJson(w,200,result)
+
+}
 
 func SendPushToClient(notiRequest Notification) (NotificationResult)   {
 
@@ -91,14 +117,13 @@ func SendPushToClient(notiRequest Notification) (NotificationResult)   {
 	dict.Body = notiRequest.Content
 
 	payload := apns.NewPayload()
-	payload.Badge = 1
 	payload.Sound = "bingbong.aiff"
 	payload.Alert = dict
 
 	pn := apns.NewPushNotification()
 	pn.DeviceToken = notiRequest.DeviceToken
 	pn.AddPayload(payload)
-
+	pn.Set("phoneNumber",notiRequest.PhoneNumberSender)
 	client := apns.NewClient("gateway.sandbox.push.apple.com:2195", "./config/pushcert.pem", "./config/pushcert.pem")
 
 	resp := client.Send(pn)

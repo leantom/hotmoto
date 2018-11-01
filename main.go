@@ -351,6 +351,8 @@ func prog(state overseer.State) {
 	// push notification
 	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
 
+	r.HandleFunc("/api/pushNotificationBookingPark",Module.PushNotificationBookParking).Methods("POST")
+
 	r.HandleFunc("/api/deleteDeviceToken",Module.DeleteDeviceTokenByUserID).Methods("POST")
 
 	r.HandleFunc("/api/registerDeviceToken",Module.RegisterDeviceTokenByUserID).Methods("POST")
