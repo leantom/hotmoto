@@ -18,15 +18,15 @@ import (
 
 	"io/ioutil"
 
-	"github.com/jpillora/overseer/fetcher"
 	"time"
+
+	"github.com/jpillora/overseer/fetcher"
 )
 
 // Represents a movie, we uses bson keyword to tell the mgo driver how to name
 // the properties in mongodb document
 
 // Fetch Example
-
 
 func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 
@@ -40,7 +40,7 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
 	} else {
-		for i := 0; i< len(res) ;i++  {
+		for i := 0; i < len(res); i++ {
 			res[i].Total = len(res)
 		}
 	}
@@ -56,18 +56,18 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	 result,err := MotoPark.FindNearLocationParking(findingNear)
+	result, err := MotoPark.FindNearLocationParking(findingNear)
 
-	 if err != nil {
-		 respondWithError(w, http.StatusInternalServerError, err.Error())
-		 return
-	 }
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	if len(result) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
 	} else {
-		for i := 0; i< len(result) ;i++  {
+		for i := 0; i < len(result); i++ {
 			result[i].Total = len(result)
 		}
 	}
@@ -77,14 +77,14 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 func InsertParking(w http.ResponseWriter, r *http.Request) {
 
 	var parking MotoPark.MotoPark
-	body, errRead :=  ioutil.ReadAll(r.Body)
+	body, errRead := ioutil.ReadAll(r.Body)
 
 	if errRead != nil {
 		respondWithError(w, http.StatusBadRequest, errRead.Error())
 		return
 	}
 
-	err := json.Unmarshal(body,&parking)
+	err := json.Unmarshal(body, &parking)
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
@@ -99,6 +99,7 @@ func InsertParking(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJson(w, http.StatusCreated, parking)
 }
+
 //login
 func Login(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -120,16 +121,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashPwd,errHashPwd := Module.Generate(users.Password)
+	hashPwd, errHashPwd := Module.Generate(users.Password)
 	log.Print(hashPwd)
 	if errHashPwd != nil {
 		respondWithError(w, http.StatusInternalServerError, "Lỗi hệ thống vui lòng thử lại sau")
 		return
 	}
 
-	errCompare := Module.Compare(hashPwd,usercurrent.Password)
+	errCompare := Module.Compare(hashPwd, usercurrent.Password)
 
-	if  errCompare != nil {
+	if errCompare != nil {
 		respondWithError(w, http.StatusInternalServerError, "Password không đúng")
 		return
 	}
@@ -188,8 +189,8 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_,errExist := Module.FindById(users.Username)
-	if errExist == nil{
+	_, errExist := Module.FindById(users.Username)
+	if errExist == nil {
 		respondWithError(w, http.StatusInternalServerError, "Username đã tồn tại")
 		return
 	}
@@ -254,7 +255,7 @@ func UpdatePriceParking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	park,err := MotoPark.UpdateCost(parkingRequest.IdPark,parkingRequest.Cost)
+	park, err := MotoPark.UpdateCost(parkingRequest.IdPark, parkingRequest.Cost)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -276,7 +277,7 @@ func UpdateSlotParking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	park,err := MotoPark.UpdateAvailableSlot(parkingSlotRequest.IdPark,parkingSlotRequest.Slot)
+	park, err := MotoPark.UpdateAvailableSlot(parkingSlotRequest.IdPark, parkingSlotRequest.Slot)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -285,7 +286,6 @@ func UpdateSlotParking(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusCreated, park)
 
 }
-
 
 func deleteParking(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -349,13 +349,13 @@ func prog(state overseer.State) {
 	r.HandleFunc("/api/uploads", Module.UploadFiles).Methods("POST")
 
 	// push notification
-	r.HandleFunc("/api/pushNotificationSingle",Module.PushNotificationSingle).Methods("POST")
+	r.HandleFunc("/api/pushNotificationSingle", Module.PushNotificationSingle).Methods("POST")
 
-	r.HandleFunc("/api/pushNotificationBookingPark",Module.PushNotificationBookParking).Methods("POST")
+	r.HandleFunc("/api/pushNotificationBookingPark", Module.PushNotificationBookParking).Methods("POST")
 
-	r.HandleFunc("/api/deleteDeviceToken",Module.DeleteDeviceTokenByUserID).Methods("POST")
+	r.HandleFunc("/api/deleteDeviceToken", Module.DeleteDeviceTokenByUserID).Methods("POST")
 
-	r.HandleFunc("/api/registerDeviceToken",Module.RegisterDeviceTokenByUserID).Methods("POST")
+	r.HandleFunc("/api/registerDeviceToken", Module.RegisterDeviceTokenByUserID).Methods("POST")
 
 	http.Serve(state.Listener, r)
 }
@@ -372,5 +372,3 @@ func main() {
 	})
 
 }
-
-
