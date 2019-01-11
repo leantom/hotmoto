@@ -165,12 +165,12 @@ func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 	}
 	result, err := MotoPark.FindParksByUserID(userRequest.Username)
 
-	if len(res) == 0 {
+	if len(result) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
 	} else {
 		for i := 0; i < len(result); i++ {
-			res[i].Total = len(result)
+			result[i].Total = len(result)
 		}
 	}
 
