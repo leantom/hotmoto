@@ -39,10 +39,6 @@ func LocationFisrtParking(w http.ResponseWriter, r *http.Request) {
 	if len(res) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
-	} else {
-		for i := 0; i < len(res); i++ {
-			res[i].Total = len(res)
-		}
 	}
 	respondWithJson(w, http.StatusOK, res)
 }
@@ -66,10 +62,6 @@ func FindingParkingWithCurrentLocation(w http.ResponseWriter, r *http.Request) {
 	if len(result) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
-	} else {
-		for i := 0; i < len(result); i++ {
-			result[i].Total = len(result)
-		}
 	}
 	respondWithJson(w, http.StatusCreated, result)
 }
@@ -168,10 +160,6 @@ func FindParksByUser(w http.ResponseWriter, r *http.Request) {
 	if len(result) == 0 {
 		respondWithJson(w, http.StatusCreated, "Khong co du lieu")
 		return
-	} else {
-		for i := 0; i < len(result); i++ {
-			result[i].Total = len(result)
-		}
 	}
 
 	if err != nil {
